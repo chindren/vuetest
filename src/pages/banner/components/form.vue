@@ -1,23 +1,11 @@
 <template>
   <div>
     <el-dialog :title="info.title" :visible.sync="info.isshow" @closed="closed">
-      <el-form :model="cate">
-        <el-form-item label="上级分类" label-width="120px">
-          <el-select v-model="cate.pid" placeholder="请选择">
-            <el-option label="请选择" :value="0" disabled></el-option>
-            <el-option label="顶级菜单" :value="0"></el-option>
-            <el-option
-              v-for="item in cateList"
-              :key="item.id"
-              :value="item.id"
-              :label="item.catename"
-            ></el-option>
-          </el-select>
+      <el-form :model="banner">
+        <el-form-item label="标题" label-width="120px">
+          <el-input v-model="banner.title" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="分类名称" label-width="120px">
-          <el-input v-model="cate.catename" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="图片" label-width="120px" v-if="cate.pid!=0">
+        <el-form-item label="图片" label-width="120px">
           <template>
             <div class="myupload">
               <span>+</span>
@@ -30,22 +18,26 @@
           </template>
         </el-form-item>
         <el-form-item label="状态" label-width="120px">
-          <el-switch v-model="cate.status" :active-value="1" :inactive-value="2"></el-switch>
+          <el-switch v-model="banner.status" :active-value="1" :inactive-value="2"></el-switch>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" v-if="info.title ==='添加分类'" @click="willAdd">添 加</el-button>
+        <el-button type="primary" v-if="info.title ==='轮播图添加'" @click="willAdd">添 加</el-button>
         <el-button type="primary" v-else @click="update">修 改</el-button>
       </div>
-      {{cate}}
+      {{banner}}
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { reqCateAdd,reqCateDetail,reqCateupdate } from "../../../utils/http";
+import {
+  reqBannerAdd,
+  reqBannerDetail,
+  reqBannerUpdate
+} from "../../../utils/http";
 
 import path from "path";
 import { successAlert, errorAlert } from "../../../utils/alert";
@@ -53,9 +45,8 @@ export default {
   props: ["info"],
   data() {
     return {
-      cate: {
-        pid: "",
-        catename: "",
+      banner: {
+        title: "",
         img: null,
         status: 1
       },
@@ -63,9 +54,14 @@ export default {
       defaultProps: {}
     };
   },
+  computed: {
+    ...mapGetters({
+      getBannerList: "banner/getList"
+    })
+  },
   methods: {
     ...mapActions({
-      reqList: "cate/reqList"
+      reqList: "banner/reqList"
     }),
     cancel() {
       this.info.isshow = false;
@@ -80,20 +76,17 @@ export default {
     },
     //36.获取一条数据
     getOne(id) {
-      reqCateDetail(id).then(res => {
+      reqBannerDetail(id).then(res => {
         //此时form上是没有id的
-        this.cate = res.data.list;
-        this.imgUrl = this.$imgUrl+this.cate.img;
-        
+        this.banner = res.data.list;
+        this.imgUrl = this.$imgUrl + this.banner.img;
         //补id
-        this.cate.id = id;
+        this.banner.id = id;
       });
     },
     //37 点了修改
     update() {
-      console.log(this.cate);
-      
-      reqCateupdate(this.cate).then(res => {
+      reqBannerUpdate(this.banner).then(res => {
         if (res.data.code === 200) {
           //成功弹框
           successAlert("修改成功");
@@ -102,9 +95,7 @@ export default {
           //form重置
           this.empty();
           //列表刷新
-          this.reqList()
-        } else {
-          errorAlert(res.data.msg);
+          this.reqList();
         }
       });
     },
@@ -117,7 +108,7 @@ export default {
     },
     // 添加成功了之后，一定要重新舒心list列表，不然不会显示新的信息
     willAdd() {
-      reqCateAdd(this.cate).then(res => {
+      reqBannerAdd(this.banner).then(res => {
         if (res.data.code === 200) {
           //成功
           //弹个成功
@@ -152,14 +143,9 @@ export default {
       this.imgUrl = URL.createObjectURL(file);
       //给user.img赋值
       ///**********************为什么要给img传值file，而不是img的url**************************************** */
-      this.cate.img = file;
+      this.banner.img = file;
       // console.log( this.cate.img);
     }
-  },
-  computed: {
-    ...mapGetters({
-      cateList: "cate/getList"
-    })
   },
   mounted() {
     this.reqList();

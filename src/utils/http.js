@@ -409,10 +409,15 @@ export const reqGoodsDetail=(id)=>{
 
 //38.商品修改
 export const reqGoodsupdate=(goods)=>{
+    // 上传文件的方法
+    let d = new FormData()
+    for (let i in goods) {
+        d.append(i, goods[i])
+    }
     return axios({
         url:baseUrl+"/api/goodsedit",
         method:"post",
-        data:goods
+        data:d
     })
 }
 
@@ -426,3 +431,116 @@ export const reqGoodsDel=(id)=>{
 }
 
 /*=========================商品管理 结束================== */
+
+/*=========================轮播图管理 开始================== */
+// 轮播图添加
+export const reqBannerAdd=(form)=>{
+    let d = new FormData();
+    for(let i in form){
+        d.append(i,form[i])
+    }
+    return axios({
+        url: baseUrl+"/api/banneradd",
+        method:"post",
+        data: d
+    })
+}
+
+// 轮播图列表
+export const reqBannerList=()=>{
+    return axios({
+        url: baseUrl+"/api/bannerlist",
+        method:"get"
+    })
+}
+
+// 35.获取一条数据
+export const reqBannerDetail=(id)=>{
+    return axios({
+        url:baseUrl+"/api/bannerinfo",
+        method:"get",
+        params:{
+            id:id
+        }
+    })
+}
+
+//38.轮播图修改
+export const reqBannerUpdate=(form)=>{
+    let d = new FormData()
+    for(let i in form){
+        d.append(i,form[i])
+    }
+    return axios({
+        url:baseUrl+"/api/banneredit",
+        method:"post",
+        data:d
+    })
+}
+// 轮播图删除
+export const reqBannerDel=(id)=>{
+    return axios({
+        url: baseUrl+"/api/bannerdelete",
+        method:"post",
+        // 不管是params还是data传参，传的必须是一个json对象，不能单单只传一个数字过去
+        data: qs.stringify({id:id})
+    })
+}
+
+/*=========================轮播图管理 结束================== */
+/*=========================限时秒杀管理 开始================== */
+// 限时秒杀添加
+export const reqSeckAdd=(form)=>{
+    // let d = new FormData();
+    // for(let i in form){
+    //     d.append(i,form[i])
+    // }
+    return axios({
+        url: baseUrl+"/api/seckadd",
+        method:"post",
+        data: form
+    })
+}
+
+// 限时秒杀列表
+export const reqSeckList=()=>{
+    return axios({
+        url: baseUrl+"/api/secklist",
+        method:"get"
+    })
+}
+
+// 35.获取一条数据
+export const reqSeckDetail=(id)=>{
+    return axios({
+        url:baseUrl+"/api/seckinfo",
+        method:"get",
+        params:{
+            id:id
+        }
+    })
+}
+
+//38.限时秒杀修改
+export const reqSeckUpdate=(form)=>{
+    // let d = new FormData()
+    // for(let i in form){
+    //     d.append(i,form[i])
+    // }
+    return axios({
+        url:baseUrl+"/api/seckedit",
+        method:"post",
+        data:form
+    })
+}
+// 限时秒杀删除
+export const reqSeckDel=(id)=>{
+    return axios({
+        url: baseUrl+"/api/seckdelete",
+        method:"post",
+        // 不管是params还是data传参，传的必须是一个json对象，不能单单只传一个数字过去
+        data: qs.stringify({id:id})
+    })
+}
+
+/*=========================限时秒杀管理 结束================== */

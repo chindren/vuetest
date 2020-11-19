@@ -55,6 +55,16 @@ export let routes = [
     path: "goods",
     component: () => import("../pages/goods/goods"),
     name: "商品列表"
+  },
+  {
+    path: "banner",
+    component: () => import("../pages/banner/banner"),
+    name: "轮播图列表"
+  },
+  {
+    path: "seck",
+    component: () => import("../pages/seck/seck"),
+    name: "限时秒杀"
   }
 ]
 
@@ -98,7 +108,7 @@ router.beforeEach((to, from, next) => {
 
 // 路由独享守卫的函数
 function checkedEnter(path, next) {
-  // 如果router里面的userInfo里面含有这个当前访问的路径，咋代表可以访问当前路径，否则不可以
+  // 如果router里面的userInfo里面含有这个当前访问的路径，则代表可以访问当前路径，否则不可以
   if (store.state.userInfo.menus_url.includes(path)) {
     // console.log(router.state.userInfo.menus_url.includes(path));
     
